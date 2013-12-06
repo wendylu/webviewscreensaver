@@ -54,7 +54,7 @@
     [self.webView setMainFrameURL:@"http://pinterest.com"];
     
     
-    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(scrollTimerFired) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:.25 target:self selector:@selector(scrollTimerFired) userInfo:nil repeats:YES];
     
 }
 
@@ -71,20 +71,17 @@
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
 {
-    NSString *script = @"document.getElementsByClassName('Grid Module')[0].style.background = '#333333'";
+    NSString *script = @"$('body, .Grid').css({background: '#333333'})"; 
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     script = @"document.getElementsByClassName('Module NewPinsIndicator')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
     //Remove elements
-    script = @"document.getElementsByClassName('Header Module')[0].style.display='none'";
+    script = @"$('.leftHeaderContent, .rightHeaderContent').remove()";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
     script = @"document.getElementsByClassName('HeroHelperBase HeroNelsonMandela Module')[0].style.display='none'";
-    [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-    script = @"document.getElementsByClassName('pinMeta').style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     script = @"document.getElementsByClassName('variableHeightLayout padItems GridItems Module centeredWithinWrapper').style.display='none'";
@@ -99,16 +96,16 @@
     
     //Disable Scroll Bars
     [self.webView setHidden:NO];
+    
+    script = @"var onTop = 0; window.setInterval(function(){ window.scroll(0, onTop); onTop = 1 + onTop; window.console.log(onTop) }, 100);";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
 }
 
 #pragma mark Scrolling
 
 - (void)scrollTimerFired
 {
-    self.scrollPosition += 100.0;
-    
-    NSString *script = [NSString stringWithFormat:@"$('html, body').animate({scrollTop:%f}, 1000, 'linear')", self.scrollPosition];
-    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    self.scrollPosition -= 10.0;
 }
 
 - (void)drawRect:(NSRect)rect
