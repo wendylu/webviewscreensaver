@@ -47,6 +47,9 @@
   
   // Timer
   NSTimer *timer_;
+
+  // Scrolling
+  float scrollPosition_;
 }
 
 @property (nonatomic, retain) IBOutlet NSWindow *sheet;

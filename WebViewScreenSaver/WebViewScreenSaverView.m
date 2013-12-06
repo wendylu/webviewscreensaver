@@ -54,6 +54,8 @@ static NSString * const kURLTableRow = @"kURLTableRow";
 
 // Fetches URLs from the URLsURL
 - (void)fetchURLs;
+
+@property (nonatomic, assign, readwrite) float scrollPosition;
 @end
 
 
@@ -68,6 +70,7 @@ static NSString * const kURLTableRow = @"kURLTableRow";
 @synthesize urlList = urlList_;
 @synthesize urlsURL = urlsURL_;
 @synthesize urlsURLField = urlsURLField_;
+@synthesize scrollPosition = scrollPosition_;
 
 + (BOOL)performGammaFade {
   return YES;
@@ -120,9 +123,9 @@ static NSString * const kURLTableRow = @"kURLTableRow";
   [super dealloc];
 }
 
-- (BOOL)hasConfigureSheet {
-  return YES;
-}
+//- (BOOL)hasConfigureSheet {
+//  return YES;
+//}
 
 //- (void)setFrame:(NSRect)frameRect {
 //  [super setFrame:frameRect];
@@ -172,9 +175,9 @@ static NSString * const kURLTableRow = @"kURLTableRow";
   NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
   [[webView_ layer] setBackgroundColor:color.CGColor];
   
-  if (!isPreview_ && currentIndex_ < [self.urls count]) {
-    [self loadFromStart];
-  }
+  [webView_ setMainFrameURL:@"http://pinterest.com"];
+    
+  [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(scrollTimerFired) userInfo:nil repeats:YES];
 }
 
 - (void)stopAnimation {
@@ -184,6 +187,16 @@ static NSString * const kURLTableRow = @"kURLTableRow";
   [webView_ removeFromSuperview];
   [webView_ close];
   webView_ = nil;
+}
+
+#pragma mark Scrolling
+
+- (void)scrollTimerFired
+{
+    scrollPosition_ += 100.0;
+    
+    NSString *script = [NSString stringWithFormat:@"$('html, body').animate({scrollTop:%f}, 1000, 'linear')", scrollPosition_];
+    [webView_ stringByEvaluatingJavaScriptFromString:script];
 }
 
 #pragma mark Loading URLs
