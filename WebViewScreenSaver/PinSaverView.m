@@ -44,12 +44,15 @@
     [self.webView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
     [self.webView setAutoresizesSubviews:YES];
     [self.webView setDrawsBackground:NO];
+    [self.webView setHidden:YES];
+
     [self addSubview:self.webView];
     
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
     [[self.webView layer] setBackgroundColor:color.CGColor];
     
-    //[self.webView setMainFrameURL:@"http://pinterest.com"];
+    [self.webView setMainFrameURL:@"http://pinterest.com"];
+    
     
     [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(scrollTimerFired) userInfo:nil repeats:YES];
     
@@ -62,6 +65,40 @@
     [self.webView removeFromSuperview];
     [self.webView close];
     self.webView = nil;
+}
+
+#pragma mark Web View
+
+- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
+{
+    NSString *script = @"document.getElementsByClassName('Grid Module')[0].style.background = '#333333'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    script = @"document.getElementsByClassName('Module NewPinsIndicator')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    //Remove elements
+    script = @"document.getElementsByClassName('Header Module')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"document.getElementsByClassName('HeroHelperBase HeroNelsonMandela Module')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"document.getElementsByClassName('pinMeta').style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    script = @"document.getElementsByClassName('variableHeightLayout padItems GridItems Module centeredWithinWrapper').style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    //Disable Scroll Bars
+    script = @"$('body').css('overflow', 'hidden')";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"$('body').css('overflow', 'auto')";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    //Disable Scroll Bars
+    [self.webView setHidden:NO];
 }
 
 #pragma mark Scrolling
