@@ -11,6 +11,8 @@
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 
+#define kWebViewContentPadding  50
+
 @interface PinSaverView ()
 @property (nonatomic, strong, readwrite) WebView *webView;
 @property (nonatomic, assign, readwrite) double scrollPosition;
@@ -45,13 +47,19 @@
     [self.webView setAutoresizesSubviews:YES];
     [self.webView setDrawsBackground:NO];
     [self.webView setHidden:YES];
-
+    
     [self addSubview:self.webView];
     
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
     [[self.webView layer] setBackgroundColor:color.CGColor];
     
     [self.webView setMainFrameURL:@"http://pinterest.com"];
+    
+    //Hide scroll bar by making content width a little larger than the width of the screen
+    CGRect frame = self.webView.mainFrame.frameView.frame;
+    frame.origin.x -= 10;
+    frame.size.width += kWebViewContentPadding * 2;
+    self.webView.mainFrame.frameView.frame = frame;
 }
 
 - (void)stopAnimation
@@ -79,6 +87,10 @@
     
     script = @"document.getElementsByClassName('HeroHelperBase HeroNelsonMandela Module')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"document.getElementsByClassName('Nags Module')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
 
     script = @"document.getElementsByClassName('variableHeightLayout padItems GridItems Module centeredWithinWrapper').style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
