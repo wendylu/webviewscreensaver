@@ -52,10 +52,6 @@
     [[self.webView layer] setBackgroundColor:color.CGColor];
     
     [self.webView setMainFrameURL:@"http://pinterest.com"];
-    
-    
-    [NSTimer scheduledTimerWithTimeInterval:.25 target:self selector:@selector(scrollTimerFired) userInfo:nil repeats:YES];
-    
 }
 
 - (void)stopAnimation
@@ -86,6 +82,45 @@
 
     script = @"document.getElementsByClassName('variableHeightLayout padItems GridItems Module centeredWithinWrapper').style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"document.getElementsByClassName('scrollToTop rounded Button ScrollToTop Module btn')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    //Change background and text color of pin metadata
+    script = @"$('.pinMeta').css({background: '#333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.pinDescription').css({color: '#FFFFFF'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.pinSocialMeta').css({color: '#FFFFFF'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"$('.richPinMeta').css({background: '#333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.richPinGridTitle').css({color: '#FFFFFF'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.richPinGridAttributionTitle').css({color: '#C3C3C3'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"$('.pinCredits').css({background: '#333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.creditName').css({color: '#FFFFFF'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.creditTitle').css({color: '#C3C3C3'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"$('.recommendationReasonWrapper').css({background: '#333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.recommendationReason').css({color: '#C3C3C3'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    //Change borders
+    script = @"$('.richPinMeta').css({'border-bottom': 'solid 1px #333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.pinCredits').css({'border-top': 'solid 1px #333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    script = @"$('.recommendationReason').css({'border-top': 'solid 1px #333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     //Disable Scroll Bars
     script = @"$('body').css('overflow', 'hidden')";
@@ -102,11 +137,6 @@
 }
 
 #pragma mark Scrolling
-
-- (void)scrollTimerFired
-{
-    self.scrollPosition -= 10.0;
-}
 
 - (void)drawRect:(NSRect)rect
 {
