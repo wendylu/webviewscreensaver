@@ -13,7 +13,16 @@
 
 #define kWebViewContentPadding  50
 
+static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
+
 @interface PinSaverView ()
+{
+    IBOutlet id configSheet;
+}
+
+@property (nonatomic, retain) IBOutlet NSButton *boardViewCheckbox;
+@property (nonatomic, retain) IBOutlet NSTextField *boardNameField;
+
 @property (nonatomic, strong, readwrite) NSImage *logoImage;
 @property (nonatomic, assign, readwrite) CGFloat logoAlpha;
 @property (nonatomic, assign, readwrite) CGFloat logoScale;
@@ -61,7 +70,7 @@
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
     [[self.webView layer] setBackgroundColor:color.CGColor];
     
-    [self.webView setMainFrameURL:@"http://pinterest.com"];
+    [self.webView setMainFrameURL:@"http://www.pinterest.com/wendylu1/wonderstruck/"];
     
     //Hide scroll bar by making content width a little larger than the width of the screen
     CGRect frame = self.webView.mainFrame.frameView.frame;
@@ -132,6 +141,15 @@
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
     NSTimer *gridCellTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(configureGridCellColor) userInfo:nil repeats:YES];
+    
+    //Board View
+    script = @"$('.boardName').css({color: '#FFFFFF'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.description').css({color: '#C3C3C3'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"$('.BoardInfoBar').remove()";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
 }
 
 - (void)configureGridCellColor
@@ -221,6 +239,8 @@
     }
 }
 
+#pragma mark Configure Sheet
+
 - (BOOL)hasConfigureSheet
 {
     return YES;
@@ -228,7 +248,39 @@
 
 - (NSWindow*)configureSheet
 {
-    return nil;
+    ScreenSaverDefaults *defaults;
+    
+	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
+    
+	if (!configSheet)
+	{
+		if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self])
+		{
+			NSLog( @"Failed to load configure sheet." );
+			NSBeep();
+		}
+	}
+	
+	[self.boardViewCheckbox setState:[defaults boolForKey:@"BoardView"]];
+	[self.boardNameField setStringValue:[defaults stringForKey:@"BoardName"]];
+	
+	return configSheet;
+}
+
+- (IBAction)dismissConfigSheet:(id)sender {
+    ScreenSaverDefaults *defaults;
+    
+	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
+    
+	// Update our defaults
+	[defaults setBool:[self.boardViewCheckbox state] forKey:@"BoardView"];
+	[defaults setObject:self.boardNameField.stringValue forKey:@"BoardName"];
+    
+	// Save the settings to disk
+	[defaults synchronize];
+    
+	// Close the sheet
+	[[NSApplication sharedApplication] endSheet:configSheet];
 }
 
 @end
