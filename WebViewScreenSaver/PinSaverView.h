@@ -9,5 +9,6 @@
 #import <ScreenSaver/ScreenSaver.h>
 
 @interface PinSaverView : ScreenSaverView
-
+- (BOOL)hasConfigureSheet;
 @end
+

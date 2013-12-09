@@ -21,6 +21,7 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 }
 
 @property (nonatomic, retain) IBOutlet NSButton *boardViewCheckbox;
+@property (nonatomic, retain) IBOutlet NSTextField *userNameField;
 @property (nonatomic, retain) IBOutlet NSTextField *boardNameField;
 
 @property (nonatomic, strong, readwrite) NSImage *logoImage;
@@ -70,7 +71,7 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
     [[self.webView layer] setBackgroundColor:color.CGColor];
     
-    [self.webView setMainFrameURL:@"http://www.pinterest.com/wendylu1/wonderstruck/"];
+    [self.webView setMainFrameURL:[self webViewURL]];
     
     //Hide scroll bar by making content width a little larger than the width of the screen
     CGRect frame = self.webView.mainFrame.frameView.frame;
@@ -206,6 +207,43 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 }
 
+- (NSString *)webViewURL
+{
+    ScreenSaverDefaults *defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
+
+    NSString *url = @"http://www.pinterest.com/";
+    
+    if ([defaults boolForKey:@"BoardView"]) {
+        if ([defaults stringForKey:@"UserName"].length > 0 && [defaults stringForKey:@"BoardName"].length > 0) {
+            //Append Username
+            url = [[url stringByAppendingString:[defaults stringForKey:@"UserName"]] stringByAppendingString:@"/"];
+            
+            NSString *boardNameForURL = [defaults stringForKey:@"BoardName"];
+            
+            //Trim whitespace at end
+            boardNameForURL = [boardNameForURL stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            
+            //Remove all non alphanumeric characters except whitespace
+            NSMutableCharacterSet *characterSet = [NSCharacterSet letterCharacterSet];
+            [characterSet formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
+            [characterSet addCharactersInString:@" "];
+            NSCharacterSet *toRemove = [characterSet invertedSet];
+            boardNameForURL = [[boardNameForURL componentsSeparatedByCharactersInSet:toRemove] componentsJoinedByString:@""];
+            
+            //Replace whitespace with hyphens
+            NSError *error = nil;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@" +" options:NSRegularExpressionCaseInsensitive error:&error];
+            boardNameForURL = [regex stringByReplacingMatchesInString:boardNameForURL options:0 range:NSMakeRange(0, [boardNameForURL length]) withTemplate:@"-"];
+
+            //Append board name
+            url = [[url stringByAppendingString:boardNameForURL] stringByAppendingString:@"/"];
+            
+            [defaults setObject:boardNameForURL forKey:@"BoardName"];
+        }
+    }
+    return url;
+}
+
 #pragma mark Scrolling
 
 - (void)drawRect:(NSRect)rect
@@ -262,25 +300,55 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 	}
 	
 	[self.boardViewCheckbox setState:[defaults boolForKey:@"BoardView"]];
-	[self.boardNameField setStringValue:[defaults stringForKey:@"BoardName"]];
-	
+    
+    if ([defaults boolForKey:@"BoardView"]) {
+        [self.userNameField setTextColor:[NSColor controlTextColor]];
+        [self.boardNameField setTextColor:[NSColor controlTextColor]];
+        if ([defaults stringForKey:@"UserName"]) {
+            [self.userNameField setStringValue:[defaults stringForKey:@"UserName"]];
+        }
+        if ([defaults stringForKey:@"BoardName"]) {
+            [self.boardNameField setStringValue:[defaults stringForKey:@"BoardName"]];
+        }
+	} else {
+        [self.userNameField setTextColor:[NSColor secondarySelectedControlColor]];
+        [self.boardNameField setTextColor:[NSColor secondarySelectedControlColor]];
+    }
+    
 	return configSheet;
 }
 
-- (IBAction)dismissConfigSheet:(id)sender {
+- (IBAction)toggleBoardView:(id)sender {
+    if (self.boardViewCheckbox.state == YES) {
+        [self.userNameField setTextColor:[NSColor controlTextColor]];
+        [self.boardNameField setTextColor:[NSColor controlTextColor]];
+    } else {
+        [self.userNameField setTextColor:[NSColor secondarySelectedControlColor]];
+        [self.boardNameField setTextColor:[NSColor secondarySelectedControlColor]];
+    }
+}
+
+- (IBAction)saveClick:(id)sender {
     ScreenSaverDefaults *defaults;
     
 	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
     
 	// Update our defaults
 	[defaults setBool:[self.boardViewCheckbox state] forKey:@"BoardView"];
-	[defaults setObject:self.boardNameField.stringValue forKey:@"BoardName"];
+    if (self.boardViewCheckbox.state == YES) {
+        [defaults setObject:self.boardNameField.stringValue forKey:@"BoardName"];
+        [defaults setObject:self.userNameField.stringValue forKey:@"UserName"];
+    }
     
 	// Save the settings to disk
 	[defaults synchronize];
     
 	// Close the sheet
 	[[NSApplication sharedApplication] endSheet:configSheet];
+}
+
+- (IBAction)cancelClick:(id)sender {
+    [[NSApplication sharedApplication] endSheet:configSheet];
 }
 
 @end
