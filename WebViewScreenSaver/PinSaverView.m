@@ -227,6 +227,7 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
             NSMutableCharacterSet *characterSet = [NSCharacterSet letterCharacterSet];
             [characterSet formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
             [characterSet addCharactersInString:@" "];
+            [characterSet addCharactersInString:@"-"];
             NSCharacterSet *toRemove = [characterSet invertedSet];
             boardNameForURL = [[boardNameForURL componentsSeparatedByCharactersInSet:toRemove] componentsJoinedByString:@""];
             
