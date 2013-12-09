@@ -14,8 +14,12 @@
 #define kWebViewContentPadding  50
 
 @interface PinSaverView ()
+@property (nonatomic, strong, readwrite) NSImage *logoImage;
+@property (nonatomic, assign, readwrite) CGFloat logoAlpha;
+
 @property (nonatomic, strong, readwrite) WebView *webView;
 @property (nonatomic, assign, readwrite) double scrollPosition;
+@property (nonatomic, assign, readwrite) BOOL webViewHasScrolled;
 @end
 
 @implementation PinSaverView
@@ -24,10 +28,14 @@
 {
     self = [super initWithFrame:frame isPreview:isPreview];
     if (self) {
-        //[self setAnimationTimeInterval:1/30.0];
+        [self setAnimationTimeInterval:1.0 / 15.0];
         
         [self setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
         [self setAutoresizesSubviews:YES];
+        
+        NSBundle *saverBundle = [NSBundle bundleForClass:[self class]];
+        _logoImage = [[NSImage alloc] initWithContentsOfFile:[saverBundle pathForResource:@"Logotype" ofType:@"png"]];
+        self.logoAlpha = 0;
     }
     return self;
 }
@@ -48,8 +56,6 @@
     [self.webView setDrawsBackground:NO];
     [self.webView setHidden:YES];
     
-    [self addSubview:self.webView];
-    
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
     [[self.webView layer] setBackgroundColor:color.CGColor];
     
@@ -60,6 +66,8 @@
     frame.origin.x -= 10;
     frame.size.width += kWebViewContentPadding * 2;
     self.webView.mainFrame.frameView.frame = frame;
+    
+    
 }
 
 - (void)stopAnimation
@@ -75,11 +83,19 @@
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
 {
+    if (self.webView.superview == nil){
+        [self addSubview:self.webView];
+    }
+    
     NSString *script = @"$('body, .Grid').css({background: '#333333'})"; 
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     script = @"document.getElementsByClassName('Module NewPinsIndicator')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
+    script = @"document.getElementsByClassName('Header Module')[0].style.opacity = 0.9";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
     
     //Remove elements
     script = @"$('.leftHeaderContent, .rightHeaderContent').remove()";
@@ -153,11 +169,18 @@
 - (void)drawRect:(NSRect)rect
 {
     [super drawRect:rect];
+    
+    CGPoint origin = CGPointMake((rect.size.width - self.logoImage.size.width) / 2, (rect.size.height - self.logoImage.size.height) / 2);
+    [self.logoImage drawAtPoint:origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:self.logoAlpha];
+    
 }
 
 - (void)animateOneFrame
 {
-    return;
+    if (self.logoAlpha < 1.0) {
+        self.logoAlpha += 0.03;
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (BOOL)hasConfigureSheet

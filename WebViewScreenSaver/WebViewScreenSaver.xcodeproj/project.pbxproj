@@ -16,6 +16,7 @@
 		8D255ACC0486D3F9007BF209 /* PinSaverView.m in Sources */ = {isa = PBXBuildFile; fileRef = F500797A0118B23001CA0E54 /* PinSaverView.m */; };
 		8D255ACE0486D3F9007BF209 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D255ACF0486D3F9007BF209 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06F27B2DFFEEEFEF11CA0E56 /* ScreenSaver.framework */; };
+		B1986634185596AA00F30735 /* Logotype.png in Resources */ = {isa = PBXBuildFile; fileRef = B1986633185596AA00F30735 /* Logotype.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		64EED3E8120EC6380048A830 /* ConfigureSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfigureSheet.xib; sourceTree = "<group>"; };
 		8D255AD20486D3F9007BF209 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D255AD30486D3F9007BF209 /* WebViewScreenSaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WebViewScreenSaver.saver; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1986633185596AA00F30735 /* Logotype.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Logotype.png; sourceTree = "<group>"; };
 		F50079790118B23001CA0E54 /* PinSaverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinSaverView.h; sourceTree = "<group>"; };
 		F500797A0118B23001CA0E54 /* PinSaverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinSaverView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,6 +81,7 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B1986633185596AA00F30735 /* Logotype.png */,
 				8D255AD20486D3F9007BF209 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				64EED3E8120EC6380048A830 /* ConfigureSheet.xib */,
@@ -183,6 +186,7 @@
 			files = (
 				8D255ACA0486D3F9007BF209 /* InfoPlist.strings in Resources */,
 				64EED3E9120EC6380048A830 /* ConfigureSheet.xib in Resources */,
+				B1986634185596AA00F30735 /* Logotype.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
