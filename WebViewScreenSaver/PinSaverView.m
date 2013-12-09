@@ -16,7 +16,7 @@
 @interface PinSaverView ()
 @property (nonatomic, strong, readwrite) NSImage *logoImage;
 @property (nonatomic, assign, readwrite) CGFloat logoAlpha;
-
+@property (nonatomic, assign, readwrite) CGFloat logoScale;
 
 @property (nonatomic, strong, readwrite) WebView *webView;
 @property (nonatomic, assign, readwrite) double scrollPosition;
@@ -29,14 +29,15 @@
 {
     self = [super initWithFrame:frame isPreview:isPreview];
     if (self) {
-        [self setAnimationTimeInterval:1.0 / 15.0];
+        [self setAnimationTimeInterval:1.0 / 30.0];
         
         [self setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
         [self setAutoresizesSubviews:YES];
         
         NSBundle *saverBundle = [NSBundle bundleForClass:[self class]];
         _logoImage = [[NSImage alloc] initWithContentsOfFile:[saverBundle pathForResource:@"Logotype" ofType:@"png"]];
-        self.logoAlpha = 0;
+        self.logoAlpha = 0.0;
+        self.logoScale = 0.5;
     }
     return self;
 }
@@ -164,20 +165,27 @@
     
     script = @"$('.PinCommentList Module summary').css({background: '#333333'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    script = @"$('.commenterNameCommentText').css({color: '#FFFFFF'});";
+    script = @"$('.commentDescriptionCreator').css({color: '#FFFFFF'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.commentDescriptionContent').css({color: '#C3C3C3'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.ui-TextField Module').css({background: '#333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.pinDescriptionCommentItem pinUserCommentBox').css({background: '#333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+    script = @"$('.PinCommentList Module summary').css({background: '#333333'});";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
     
     //Change borders
     script = @"$('.richPinMeta').css({'border-bottom': 'solid 1px #333333'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
+    
     script = @"$('.pinCredits').css({'border-top': 'solid 1px #333333'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
     script = @"$('.recommendationReason').css({'border-top': 'solid 1px #333333'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-
 }
 
 #pragma mark Scrolling
@@ -186,29 +194,36 @@
 {
     [super drawRect:rect];
     
-    CGPoint origin = CGPointMake((rect.size.width - self.logoImage.size.width) / 2, (rect.size.height - self.logoImage.size.height) / 2);
-    [self.logoImage drawAtPoint:origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:self.logoAlpha];
+    CGSize newSize = CGSizeMake(self.logoImage.size.width * self.logoScale, self.logoImage.size.height * self.logoScale);
+    
+    CGPoint origin = CGPointMake((rect.size.width - newSize.width) / 2, (rect.size.height - newSize.height) / 2);
+    CGRect newRect = CGRectMake(origin.x, origin.y, newSize.width, newSize.height);
+    [self.logoImage drawInRect:newRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:self.logoAlpha];
     
 }
 
 - (void)animateOneFrame
 {
-    if (self.logoAlpha < 1.0) {
-        self.logoAlpha += 0.03;
+    if (self.logoScale < 1.5) {
+        self.logoScale += 0.015;
+        
+        if (self.logoScale < 1) {
+            self.logoAlpha += 0.015;
+        } else {
+            self.logoAlpha -= 0.015;
+        }
+        
         [self setNeedsDisplay:YES];
     } else {
         if (self.webView.superview == nil) {
             [self addSubview:self.webView];
-        } else {
-            [self configureGridCellColor];
         }
-
     }
 }
 
 - (BOOL)hasConfigureSheet
 {
-    return NO;
+    return YES;
 }
 
 - (NSWindow*)configureSheet
