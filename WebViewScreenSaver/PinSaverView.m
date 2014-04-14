@@ -20,9 +20,14 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     IBOutlet id configSheet;
 }
 
-@property (nonatomic, retain) IBOutlet NSButton *boardViewCheckbox;
+@property (strong) IBOutlet NSTabView *configTabView;
+@property (strong) IBOutlet NSTabViewItem *homeFeedTabViewItem;
+@property (strong) IBOutlet NSTabViewItem *boardTabViewItem;
+
 @property (nonatomic, retain) IBOutlet NSTextField *userNameField;
 @property (nonatomic, retain) IBOutlet NSTextField *boardNameField;
+@property (strong) IBOutlet NSTextField *userNameLabel;
+@property (strong) IBOutlet NSTextField *boardTitleLabel;
 
 @property (nonatomic, strong, readwrite) NSImage *logoImage;
 @property (nonatomic, assign, readwrite) CGFloat logoAlpha;
@@ -126,6 +131,11 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     script = @"document.getElementsByClassName('scrollToTop rounded Button ScrollToTop Module btn')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
+    //Configure invite friends cell
+    script = @"document.getElementsByClassName('item')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    //Grid cell colors
     [self configureGridCellColor];
     
     //Disable Scroll Bars
@@ -138,10 +148,8 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     //Disable Scroll Bars
     [self.webView setHidden:NO];
     
-    script = @"var onTop = 0; window.setInterval(function(){ window.scroll(0, onTop); onTop = 1 + onTop; window.console.log(onTop) }, 100);";
+    script = @"var onTop = 0; window.setInterval(function(){ window.scroll(0, onTop); onTop = 1 + onTop; window.console.log(onTop) }, 50);";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-    NSTimer *gridCellTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(configureGridCellColor) userInfo:nil repeats:YES];
     
     //Board View
     script = @"$('.boardName').css({color: '#FFFFFF'});";
@@ -151,6 +159,14 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     
     script = @"$('.BoardInfoBar').remove()";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    //Since pins are loaded by page, we need to check for and configure the newly loaded cells
+    NSTimer *pagingTimer = [NSTimer timerWithTimeInterval:1.0
+                                                   target:self
+                                                 selector:@selector(pagingTimerFired:)
+                                                 userInfo:nil
+                                                  repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:pagingTimer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)configureGridCellColor
@@ -205,6 +221,15 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     
     script = @"$('.recommendationReason').css({'border-top': 'solid 1px #333333'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
+}
+
+- (void)pagingTimerFired:(NSTimer *)timer
+{
+    //Check for and remove new pins indicator, configure grid cell color
+    NSString *script = @"document.getElementsByClassName('Module NewPinsIndicator')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    [self configureGridCellColor];
 }
 
 - (NSString *)webViewURL
@@ -300,33 +325,20 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 		}
 	}
 	
-	[self.boardViewCheckbox setState:[defaults boolForKey:@"BoardView"]];
-    
-    if ([defaults boolForKey:@"BoardView"]) {
-        [self.userNameField setTextColor:[NSColor controlTextColor]];
-        [self.boardNameField setTextColor:[NSColor controlTextColor]];
+	if ([defaults boolForKey:@"BoardView"]) {
+        [self.configTabView selectTabViewItem:self.boardTabViewItem];
+
         if ([defaults stringForKey:@"UserName"]) {
             [self.userNameField setStringValue:[defaults stringForKey:@"UserName"]];
         }
         if ([defaults stringForKey:@"BoardName"]) {
             [self.boardNameField setStringValue:[defaults stringForKey:@"BoardName"]];
         }
-	} else {
-        [self.userNameField setTextColor:[NSColor secondarySelectedControlColor]];
-        [self.boardNameField setTextColor:[NSColor secondarySelectedControlColor]];
+    } else {
+        [self.configTabView selectTabViewItem:self.homeFeedTabViewItem];
     }
     
 	return configSheet;
-}
-
-- (IBAction)toggleBoardView:(id)sender {
-    if (self.boardViewCheckbox.state == YES) {
-        [self.userNameField setTextColor:[NSColor controlTextColor]];
-        [self.boardNameField setTextColor:[NSColor controlTextColor]];
-    } else {
-        [self.userNameField setTextColor:[NSColor secondarySelectedControlColor]];
-        [self.boardNameField setTextColor:[NSColor secondarySelectedControlColor]];
-    }
 }
 
 - (IBAction)saveClick:(id)sender {
@@ -335,8 +347,8 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
     
 	// Update our defaults
-	[defaults setBool:[self.boardViewCheckbox state] forKey:@"BoardView"];
-    if (self.boardViewCheckbox.state == YES) {
+	[defaults setBool:self.configTabView.selectedTabViewItem == self.boardTabViewItem forKey:@"BoardView"];
+    if (self.configTabView.selectedTabViewItem == self.boardTabViewItem) {
         [defaults setObject:self.boardNameField.stringValue forKey:@"BoardName"];
         [defaults setObject:self.userNameField.stringValue forKey:@"UserName"];
     }
