@@ -31,7 +31,7 @@
 		64EED328120EC1B40048A830 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		64EED3E8120EC6380048A830 /* ConfigureSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfigureSheet.xib; sourceTree = "<group>"; };
 		8D255AD20486D3F9007BF209 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D255AD30486D3F9007BF209 /* WebViewScreenSaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WebViewScreenSaver.saver; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D255AD30486D3F9007BF209 /* PinSaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PinSaver.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1986633185596AA00F30735 /* Logotype.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Logotype.png; sourceTree = "<group>"; };
 		F50079790118B23001CA0E54 /* PinSaverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinSaverView.h; sourceTree = "<group>"; };
 		F500797A0118B23001CA0E54 /* PinSaverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinSaverView.m; sourceTree = "<group>"; };
@@ -101,7 +101,7 @@
 		19C28FB8FE9D52D311CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D255AD30486D3F9007BF209 /* WebViewScreenSaver.saver */,
+				8D255AD30486D3F9007BF209 /* PinSaver.saver */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,7 +149,7 @@
 			name = WebViewScreenSaver;
 			productInstallPath = "$(HOME)/Library/Screen Savers";
 			productName = WebViewScreenSaver;
-			productReference = 8D255AD30486D3F9007BF209 /* WebViewScreenSaver.saver */;
+			productReference = 8D255AD30486D3F9007BF209 /* PinSaver.saver */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -280,14 +280,14 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_GC = "";
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = WebViewScreenSaver_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Screen Savers";
-				PRODUCT_NAME = WebViewScreenSaver;
+				PRODUCT_NAME = PinSaver;
 				WRAPPER_EXTENSION = saver;
 				ZERO_LINK = YES;
 			};
@@ -300,13 +300,13 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_GC = "";
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = WebViewScreenSaver_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Screen Savers";
-				PRODUCT_NAME = WebViewScreenSaver;
+				PRODUCT_NAME = PinSaver;
 				WRAPPER_EXTENSION = saver;
 			};
 			name = Release;
