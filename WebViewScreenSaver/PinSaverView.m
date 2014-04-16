@@ -36,6 +36,8 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 @property (nonatomic, strong, readwrite) WebView *webView;
 @property (nonatomic, assign, readwrite) double scrollPosition;
 @property (nonatomic, assign, readwrite) BOOL webViewHasScrolled;
+@property (nonatomic, assign, readwrite) BOOL webviewLoaded;
+@property (nonatomic, assign, readwrite) BOOL displayConfigured;
 @end
 
 @implementation PinSaverView
@@ -100,34 +102,43 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
 {
-    NSString *script = @"$('body, .Grid').css({background: '#333333'})"; 
+    self.webviewLoaded = YES;
+    if (self.webView.superview && self.displayConfigured == NO) {
+        self.displayConfigured = YES;
+        [self configureDisplay];
+    }
+}
+
+- (void)configureDisplay
+{
+    NSString *script = @"$('body, .Grid').css({background: '#333333'})";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     //Hide corners
     script = @"$('.pinWrapper').css({background: '#333333'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     script = @"document.getElementsByClassName('Module NewPinsIndicator')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     script = @"document.getElementsByClassName('Header Module')[0].style.opacity = 0.9";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
-    
+
     //Remove elements
     script = @"$('.leftHeaderContent, .rightHeaderContent').remove()";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     script = @"document.getElementsByClassName('HeroHelperBase HeroNelsonMandela Module')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     script = @"document.getElementsByClassName('Nags Module')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
 
     script = @"document.getElementsByClassName('variableHeightLayout padItems GridItems Module centeredWithinWrapper').style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     script = @"document.getElementsByClassName('scrollToTop rounded Button ScrollToTop Module btn')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
@@ -137,31 +148,31 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 
     //Grid cell colors
     [self configureGridCellColor];
-    
+
     //Disable Scroll Bars
     script = @"$('body').css('overflow', 'hidden')";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     script = @"$('body').css('overflow', 'auto')";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     //Disable Scroll Bars
     [self.webView setHidden:NO];
-    
+
     script = @"var onTop = 0; window.setInterval(function(){ window.scroll(0, onTop); onTop = 1 + onTop; window.console.log(onTop) }, 50);";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     //Board View
     script = @"$('.boardName').css({color: '#FFFFFF'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.description').css({color: '#C3C3C3'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
+
     script = @"$('.BoardInfoBar').remove()";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     //Since pins are loaded by page, we need to check for and configure the newly loaded cells
-    NSTimer *pagingTimer = [NSTimer timerWithTimeInterval:1.0
+    NSTimer *pagingTimer = [NSTimer timerWithTimeInterval:2.0
                                                    target:self
                                                  selector:@selector(pagingTimerFired:)
                                                  userInfo:nil
@@ -249,13 +260,13 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
             boardNameForURL = [boardNameForURL stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
             
             //Remove all non alphanumeric characters except whitespace
-            NSMutableCharacterSet *characterSet = [NSCharacterSet letterCharacterSet];
+            NSMutableCharacterSet *characterSet = [[NSCharacterSet letterCharacterSet] mutableCopy];
             [characterSet formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
             [characterSet addCharactersInString:@" "];
             [characterSet addCharactersInString:@"-"];
             NSCharacterSet *toRemove = [characterSet invertedSet];
             boardNameForURL = [[boardNameForURL componentsSeparatedByCharactersInSet:toRemove] componentsJoinedByString:@""];
-            
+
             //Replace whitespace with hyphens
             NSError *error = nil;
             NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@" +" options:NSRegularExpressionCaseInsensitive error:&error];
@@ -263,8 +274,6 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 
             //Append board name
             url = [[url stringByAppendingString:boardNameForURL] stringByAppendingString:@"/"];
-            
-            [defaults setObject:boardNameForURL forKey:@"BoardName"];
         }
     }
     return url;
@@ -299,6 +308,10 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     } else {
         if (self.webView.superview == nil) {
             [self addSubview:self.webView];
+            if (self.webviewLoaded == YES && self.displayConfigured == NO) {
+                self.displayConfigured = YES;
+                [self configureDisplay];
+            }
         }
     }
 }
