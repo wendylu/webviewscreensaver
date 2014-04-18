@@ -111,11 +111,11 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 
 - (void)configureDisplay
 {
-    NSString *script = @"$('body, .Grid').css({background: '#333333'})";
+    NSString *script = @"$('body, .Grid').css({background: '#000000'})";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     //Hide corners
-    script = @"$('.pinWrapper').css({background: '#333333'});";
+    script = @"$('.pinWrapper').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     script = @"document.getElementsByClassName('Module NewPinsIndicator')[0].style.display='none'";
@@ -183,54 +183,54 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
 - (void)configureGridCellColor
 {
     //Change background and text color of pin metadata
-    NSString *script = @"$('.pinMeta').css({background: '#333333'});";
+    NSString *script = @"$('.pinMeta').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.pinDescription').css({color: '#FFFFFF'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.pinSocialMeta').css({color: '#FFFFFF'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
-    script = @"$('.richPinMeta').css({background: '#333333'});";
+    script = @"$('.richPinMeta').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.richPinGridTitle').css({color: '#FFFFFF'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.richPinGridAttributionTitle').css({color: '#C3C3C3'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
-    script = @"$('.pinCredits').css({background: '#333333'});";
+    script = @"$('.pinCredits').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.creditName').css({color: '#FFFFFF'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.creditTitle').css({color: '#C3C3C3'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
-    script = @"$('.recommendationReasonWrapper').css({background: '#333333'});";
+    script = @"$('.recommendationReasonWrapper').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.recommendationReason').css({color: '#C3C3C3'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
-    script = @"$('.PinCommentList Module summary').css({background: '#333333'});";
+    script = @"$('.PinCommentList Module summary').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.commentDescriptionCreator').css({color: '#FFFFFF'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     script = @"$('.commentDescriptionContent').css({color: '#C3C3C3'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    script = @"$('.ui-TextField Module').css({background: '#333333'});";
+    script = @"$('.ui-TextField Module').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    script = @"$('.pinDescriptionCommentItem pinUserCommentBox').css({background: '#333333'});";
+    script = @"$('.pinDescriptionCommentItem pinUserCommentBox').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    script = @"$('.PinCommentList Module summary').css({background: '#333333'});";
+    script = @"$('.PinCommentList Module summary').css({background: '#000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     
     //Change borders
-    script = @"$('.richPinMeta').css({'border-bottom': 'solid 1px #333333'});";
+    script = @"$('.richPinMeta').css({'border-bottom': 'solid 1px #000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
-    script = @"$('.pinCredits').css({'border-top': 'solid 1px #333333'});";
+    script = @"$('.pinCredits').css({'border-top': 'solid 1px #000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
     
-    script = @"$('.recommendationReason').css({'border-top': 'solid 1px #333333'});";
+    script = @"$('.recommendationReason').css({'border-top': 'solid 1px #000000'});";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 }
 
