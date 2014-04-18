@@ -82,7 +82,7 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     
     //Hide scroll bar by making content width a little larger than the width of the screen
     CGRect frame = self.webView.mainFrame.frameView.frame;
-    frame.origin.x -= 10;
+    frame.origin.x -= 40 ;
     frame.size.width += kWebViewContentPadding * 2;
     self.webView.mainFrame.frameView.frame = frame;
     
@@ -172,7 +172,7 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     //Since pins are loaded by page, we need to check for and configure the newly loaded cells
-    NSTimer *pagingTimer = [NSTimer timerWithTimeInterval:2.0
+    NSTimer *pagingTimer = [NSTimer timerWithTimeInterval:3.0
                                                    target:self
                                                  selector:@selector(pagingTimerFired:)
                                                  userInfo:nil
