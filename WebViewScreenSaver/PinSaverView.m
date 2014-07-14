@@ -124,17 +124,18 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     script = @"document.getElementsByClassName('Header Module')[0].style.opacity = 0.9";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
+    script = @"document.getElementsByClassName('Header guided Module')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
+
+    script = @"document.getElementsByClassName('guided CategoriesBar Module fadeIn')[0].style.display='none'";
+    [self.webView stringByEvaluatingJavaScriptFromString:script];
 
     //Remove elements
     script = @"$('.leftHeaderContent, .rightHeaderContent').remove()";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
-    script = @"document.getElementsByClassName('HeroHelperBase HeroNelsonMandela Module')[0].style.display='none'";
-    [self.webView stringByEvaluatingJavaScriptFromString:script];
-
     script = @"document.getElementsByClassName('Nags Module')[0].style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-
 
     script = @"document.getElementsByClassName('variableHeightLayout padItems GridItems Module centeredWithinWrapper').style.display='none'";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
@@ -159,6 +160,7 @@ static NSString * const MyModuleName = @"com.Pinterest.MyScreenSaver";
     //Disable Scroll Bars
     [self.webView setHidden:NO];
 
+    //First, scroll to the end of the header bar, then slow incrementally
     script = @"var onTop = 0; window.setInterval(function(){ window.scroll(0, onTop); onTop = 1 + onTop; window.console.log(onTop) }, 50);";
     [self.webView stringByEvaluatingJavaScriptFromString:script];
 
